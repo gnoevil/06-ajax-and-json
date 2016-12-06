@@ -43,6 +43,8 @@ Article.loadAll = function(inputData) {
  source, process it, then hand off control to the View: */
 Article.fetchAll = function() {
   if (localStorage.blogArticles) {
+    Article.loadAll(JSON.parse(localStorage.blogArticles));
+    articleView.renderIndexPage();
     /* When our data is already in localStorage:
     1. We can process and load it,
     2. Then we can render the index page.  */
@@ -52,15 +54,12 @@ Article.fetchAll = function() {
       1.a Load our json data
       1.b Store that data in localStorage so that we can skip the server call next time,
       1.c And then render the index page.*/
-    var articleJSON = $.getJSON({
-      url: '/data/blogArticles.json'
+    $.getJSON('data/blogArticles.json', function(articleJSON) {
+      Article.loadAll(articleJSON);
+      localStorage.setItem('blogArticles', JSON.stringify(articleJSON));
     });
-    var articleStringy = JSON.stringify(articleJSON);
-    localStorage.articleStringy = articleStringy;
-    console.log(articleStringy);
-  }
-
-};
+    articleView.renderIndexPage();
+  } };
 
 
 
